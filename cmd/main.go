@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/go-co-op/gocron"
@@ -21,8 +24,7 @@ func main() {
 	scheduler.StartAsync()
 	fmt.Println("Scheduler started...")
 
-	var input string
-	for input != "exit" {
-		fmt.Scanln(&input)
-	}
+	quitChannel := make(chan os.Signal, 1)
+	signal.Notify(quitChannel, syscall.SIGINT, syscall.SIGTERM)
+	<-quitChannel
 }
