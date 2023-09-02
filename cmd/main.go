@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gocron-sample/database"
+	"gocron-sample/service"
 	"os"
 	"os/signal"
 	"syscall"
@@ -11,17 +12,11 @@ import (
 	"github.com/go-co-op/gocron"
 )
 
-// A simple job that prints a string.
-func printJob() {
-	fmt.Printf("%s: Executed print job.\n", time.Now())
-}
-
 func main() {
-	database.OpenDb()
-	database.CreateTables()
+	database.OpenDb("postgres://root:root@localhost:5432/data-persistence?sslmode=disable")
 
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(2).Seconds().Do(printJob)
+	scheduler.Every(2).Seconds().Do(service.PrintJob)
 
 	fmt.Println("Starting scheduler...")
 	scheduler.StartAsync()
@@ -31,5 +26,5 @@ func main() {
 	quitChannel := make(chan os.Signal, 1)
 	signal.Notify(quitChannel, syscall.SIGINT, syscall.SIGTERM)
 	<-quitChannel
-	fmt.Println("Exiting schduler app...")
+	fmt.Println("Exiting scheduler app...")
 }
