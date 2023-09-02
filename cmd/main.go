@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"gocron-sample/database"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,15 +17,19 @@ func printJob() {
 }
 
 func main() {
-	scheduler := gocron.NewScheduler(time.UTC)
+	database.OpenDb()
+	database.CreateTables()
 
+	scheduler := gocron.NewScheduler(time.UTC)
 	scheduler.Every(2).Seconds().Do(printJob)
 
 	fmt.Println("Starting scheduler...")
 	scheduler.StartAsync()
 	fmt.Println("Scheduler started...")
 
+	// Exit handling
 	quitChannel := make(chan os.Signal, 1)
 	signal.Notify(quitChannel, syscall.SIGINT, syscall.SIGTERM)
 	<-quitChannel
+	fmt.Println("Exiting schduler app...")
 }
