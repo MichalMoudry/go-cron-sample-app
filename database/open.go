@@ -27,7 +27,7 @@ func getDbContext() (*sqlx.DB, error) {
 
 // Function for creating basic tables.
 func CreateTables() {
-	if ctx, err := getDbContext(); err != nil {
+	if ctx, err := getDbContext(); err == nil {
 		ctx.MustExec(query.CreateTables)
 	} else {
 		log.Fatal(err)

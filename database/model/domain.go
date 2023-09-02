@@ -1,15 +1,9 @@
 package model
 
-import (
-	"time"
-
-	"github.com/google/uuid"
-)
-
 type JobResult struct {
-	Id       uuid.UUID
+	Id       int
 	Name     string
-	Status   bool
-	Started  time.Time
-	Finished time.Time
+	Status   int
+	Started  string
+	Finished string
 }
